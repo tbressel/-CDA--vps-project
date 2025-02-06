@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - main
- 
-jobs: 
+
+jobs:
   deploy:
     runs-on: ubuntu-latest
 
@@ -13,17 +13,27 @@ jobs:
       - name: Récupérer le code
         uses: actions/checkout@v3
 
+      - name: Installer Docker Compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+
       - name: Se connecter au VPS et déployer
         uses: appleboy/ssh-action@master
         with:
-          host: ${{secrets.VPS_HOST}}
+          host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          port: ${{secrets.VPS_PORT}}
+          port: ${{ secrets.VPS_PORT }}
           script: |
             cd /home/thomas/vps_project
             git pull origin main
-            docker build -t vps-project .
-            docker stop vps-project-container || true
-            docker rm vps-project-container || true
-            docker run -d --name vps-project-container -p 5000:5000 --env-file .env vps-project
+
+            # Assurer que Docker Compose est installé
+            docker-compose -v
+
+            # Arrêter et supprimer les anciens conteneurs
+            docker-compose down || true
+
+            # Construire et démarrer les conteneurs via Docker Compose
+            docker-compose up -d --build
