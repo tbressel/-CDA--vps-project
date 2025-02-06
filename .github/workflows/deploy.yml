@@ -13,12 +13,6 @@ jobs:
       - name: Récupérer le code
         uses: actions/checkout@v3
 
-      - name: Set DNS to Google
-        run: |
-          sudo systemctl restart systemd-resolved
-          sudo ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
-          echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf
-
       - name: Se connecter au VPS et déployer
         uses: appleboy/ssh-action@master
         with:
