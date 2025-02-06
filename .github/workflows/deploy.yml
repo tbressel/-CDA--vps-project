@@ -21,7 +21,7 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 22666
           script: |
-            cd /home/thomas/vps-project
+            cd /home/thomas/vps_project
             git pull origin main
             docker build -t vps-project .
             docker stop vps-project-container || true
