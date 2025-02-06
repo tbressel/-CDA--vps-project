@@ -13,11 +13,6 @@ jobs:
       - name: Récupérer le code
         uses: actions/checkout@v3
 
-      - name: Set DNS to Google
-        run: |
-          sudo cp /etc/resolv.conf /etc/resolv.conf.bak
-          echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf
-
       - name: Se connecter au VPS et déployer
         uses: appleboy/ssh-action@master
         with:
